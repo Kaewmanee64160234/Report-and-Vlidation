@@ -116,6 +116,10 @@ public class User {
         }
         return user;
     }
+
+    public  boolean isValid(){
+        return this.login.length() >=3 && this.password.length() >= 3 && this.username.length() >=3;
+    }
     
     
     

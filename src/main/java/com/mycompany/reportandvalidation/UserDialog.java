@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -46,7 +47,7 @@ public class UserDialog extends javax.swing.JDialog {
         }
 
     }
-    
+
     private void loadImage(String path) {
         if (editedUser.getId() > 0) {
             ImageIcon icon = new ImageIcon(path);
@@ -244,22 +245,33 @@ public class UserDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        User user;
-        if (editedUser.getId() < 0) {//Add New
-            setFormToObject();
-            user = userService.addNew(editedUser);
-        } else {
-            setFormToObject();
-            user = userService.update(editedUser);
+        try {
+            User user;
+            if (editedUser.getId() < 0) {//Add New
+                setFormToObject();
+
+                user = userService.addNew(editedUser);
+
+            } else {
+                setFormToObject();
+                user = userService.update(editedUser);
+            }
+            saveImage(user);
+        } catch (ValidateException ex) {
+            Logger.getLogger(UserDialog.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
         }
-        saveImage(user);
+        
         this.dispose();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void saveImage(User user) {
-        if(path==null || path.isEmpty()) return;
+        if (path == null || path.isEmpty()) {
+            return;
+        }
         try {
-            BufferedImage  image = ImageIO.read(new File(path));
+            BufferedImage image = ImageIO.read(new File(path));
             ImageIO.write(image, "png", new File("./user" + user.getId() + ".png")); // name image
         } catch (IOException ex) {
             Logger.getLogger(UserDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -279,25 +291,25 @@ public class UserDialog extends javax.swing.JDialog {
         editedUser.setUsername(edtName.getText());
         editedUser.setPassword(new String(edtPassword.getPassword()));
         int index = cmbRole.getSelectedIndex();
-        if(index == 0){
+        if (index == 0) {
             editedUser.setRole("admin");
-        }else{
-              editedUser.setRole("user");
+        } else {
+            editedUser.setRole("user");
         }
-        
+
     }
 
     private void setObjectToForm() {
         edtLogin.setText(editedUser.getLogin());
         edtName.setText(editedUser.getUsername());
         edtPassword.setText(editedUser.getPassword());
-       String role =  editedUser.getRole();
-       if(role.equals("admin")){
-           cmbRole.setSelectedIndex(0);
-       }else{
+        String role = editedUser.getRole();
+        if (role.equals("admin")) {
+            cmbRole.setSelectedIndex(0);
+        } else {
             cmbRole.setSelectedIndex(1);
-       }
-       
+        }
+
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;

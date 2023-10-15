@@ -4,7 +4,6 @@
  */
 package com.mycompany.reportandvalidation;
 
-
 import java.util.List;
 
 /**
@@ -12,13 +11,14 @@ import java.util.List;
  * @author USER
  */
 public class UserService {
+
     static User currentUser;
 
     public static User getCurrentUser() {
         return currentUser;
-    }    
-    
-      public User login(String login, String password) {
+    }
+
+    public User login(String login, String password) {
         UserDao userDao = new UserDao();
         User user = userDao.getByLogin(login);
         if (user != null && user.getPassword().equals(password)) {
@@ -26,20 +26,28 @@ public class UserService {
         }
         return null;
     }
-      
-      public List<User>getUsers() {
+
+    public List<User> getUsers() {
         UserDao userDao = new UserDao();
-        return userDao.getAll(" user_login asc");  
+        return userDao.getAll(" user_login asc");
     }
 
-    public User addNew(User editedUser) {
-        UserDao userDao = new UserDao();
-        return userDao.save(editedUser);
+    public User addNew(User editedUser) throws ValidateException {
+        if (editedUser.isValid()) {
+            UserDao userDao = new UserDao();
+            return userDao.save(editedUser);
+        } else {
+            throw new ValidateException("Error, Plase check agin.");
+        }
     }
 
-    public User update(User editedUser) {
-        UserDao userDao = new UserDao();
-        return userDao.update(editedUser);
+    public User update(User editedUser) throws ValidateException {
+        if (editedUser.isValid()) {
+            UserDao userDao = new UserDao();
+            return userDao.update(editedUser);
+        } else {
+            throw new ValidateException("Error, Plase check agin.");
+        }
     }
 
     public int delete(User editedUser) {
