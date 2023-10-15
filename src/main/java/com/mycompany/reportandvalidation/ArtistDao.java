@@ -55,24 +55,56 @@ public class ArtistDao implements Dao<ArtistReport> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from
                                                                        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
-    public List<ArtistReport> getArtistByTotalPrice(int limit) {
+      public List<ArtistReport> getAllArtistByTotalPrice() {
         ArrayList<ArtistReport> list = new ArrayList<>();
-         String sql = "SELECT art.*, SUM(ini.UnitPrice) TotalQuantity, SUM(ini.UnitPrice*ini.Quantity) as TotalPrice FROM artists art "
-                    +
-                    "INNER JOIN albums alb ON alb.ArtistId=art.ArtistId " +
-                    " INNER JOIN tracks tra ON tra.AlbumId=alb.AlbumId " +
-                    "INNER JOIN invoice_items ini ON ini.TrackId=tra.TrackId " +
-                    " INNER JOIN invoices inv ON inv.InvoiceId=ini.InvoiceId " +
-                 ""+
-                    "GROUP BY art.ArtistId " +
-                    "ORDER BY TotalPrice DESC LIMIT ?";
+        String sql = "SELECT art.*, SUM(ini.UnitPrice) TotalQuantity, SUM(ini.UnitPrice*ini.Quantity) as TotalPrice FROM artists art "
+                +
+                "INNER JOIN albums alb ON alb.ArtistId=art.ArtistId " +
+                " INNER JOIN tracks tra ON tra.AlbumId=alb.AlbumId " +
+                "INNER JOIN invoice_items ini ON ini.TrackId=tra.TrackId " +
+                " INNER JOIN invoices inv ON inv.InvoiceId=ini.InvoiceId " +
+             
+                "GROUP BY art.ArtistId " +
+                "ORDER BY TotalPrice DESC LIMIT 10";
         try {
             Connection conn = DatabaseHelper.getConnect();
 
-           
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, limit);
+                      
+         
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ArtistReport artist = ArtistReport.fromRS(rs);
+                list.add(artist);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ArtistDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public List<ArtistReport> getArtistByTotalPrice(String startdate,String stopDate,int limit) {
+        ArrayList<ArtistReport> list = new ArrayList<>();
+        String sql = "SELECT art.*, SUM(ini.UnitPrice) TotalQuantity, SUM(ini.UnitPrice*ini.Quantity) as TotalPrice FROM artists art "
+                +
+                "INNER JOIN albums alb ON alb.ArtistId=art.ArtistId " +
+                " INNER JOIN tracks tra ON tra.AlbumId=alb.AlbumId " +
+                "INNER JOIN invoice_items ini ON ini.TrackId=tra.TrackId " +
+                " INNER JOIN invoices inv ON inv.InvoiceId=ini.InvoiceId " +
+                "AND inv.InvoiceDate BETWEEN ? AND ?" +
+                "GROUP BY art.ArtistId " +
+                "ORDER BY TotalPrice DESC LIMIT ?";
+        try {
+            Connection conn = DatabaseHelper.getConnect();
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, startdate);            
+            stmt.setString(2, stopDate);
+
+            stmt.setInt(3, limit);
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 ArtistReport artist = ArtistReport.fromRS(rs);
