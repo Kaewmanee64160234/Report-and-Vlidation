@@ -13,7 +13,7 @@ import java.util.List;
 public class ArtistService {
      public List<ArtistReport> getTopTenArtistByTotalPrice(){
          ArtistDao artistDao = new ArtistDao();
-         return artistDao.getTopTenArtistByTotalPrice();
+         return artistDao.getArtistByTotalPrice(5);
      }
     
 }

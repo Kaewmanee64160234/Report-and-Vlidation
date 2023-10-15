@@ -5,6 +5,7 @@
 package com.mycompany.reportandvalidation;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -55,21 +56,25 @@ public class ArtistDao implements Dao<ArtistReport> {
                                                                        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public List<ArtistReport> getTopTenArtistByTotalPrice() {
+    public List<ArtistReport> getArtistByTotalPrice(int limit) {
         ArrayList<ArtistReport> list = new ArrayList<>();
+         String sql = "SELECT art.*, SUM(ini.UnitPrice) TotalQuantity, SUM(ini.UnitPrice*ini.Quantity) as TotalPrice FROM artists art "
+                    +
+                    "INNER JOIN albums alb ON alb.ArtistId=art.ArtistId " +
+                    " INNER JOIN tracks tra ON tra.AlbumId=alb.AlbumId " +
+                    "INNER JOIN invoice_items ini ON ini.TrackId=tra.TrackId " +
+                    " INNER JOIN invoices inv ON inv.InvoiceId=ini.InvoiceId " +
+                    "GROUP BY art.ArtistId " +
+                    "ORDER BY TotalPrice DESC LIMIT ?";
         try {
             Connection conn = DatabaseHelper.getConnect();
-            Statement stm = conn.createStatement();
-            String sql = "SELECT art.*, SUM(ini.UnitPrice) TotalQuantity, SUM(ini.UnitPrice*ini.Quantity) as TotalPrice FROM artists art "+
-            "INNER JOIN albums alb ON alb.ArtistId=art.ArtistId "+
-           " INNER JOIN tracks tra ON tra.AlbumId=alb.AlbumId "+
-            "INNER JOIN invoice_items ini ON ini.TrackId=tra.TrackId "+
-           " INNER JOIN invoices inv ON inv.InvoiceId=ini.InvoiceId "+
-            "GROUP BY art.ArtistId "+
-           "ORDER BY TotalPrice DESC LIMIT 10";
-            ResultSet rs = stm.executeQuery(sql);
+
+           
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                ArtistReport artist =  ArtistReport.fromRS(rs);
+                ArtistReport artist = ArtistReport.fromRS(rs);
                 list.add(artist);
             }
 
