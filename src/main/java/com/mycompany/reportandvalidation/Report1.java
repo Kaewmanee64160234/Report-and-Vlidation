@@ -4,17 +4,23 @@
  */
 package com.mycompany.reportandvalidation;
 
+import java.util.List;
+
 /**
  *
  * @author USER
  */
 public class Report1 extends javax.swing.JFrame {
-
+private final ArtistService artistService;
+    private final List<ArtistReport> artisList;
     /**
      * Creates new form Report1
      */
     public Report1() {
         initComponents();
+         artistService = new ArtistService();
+         artisList = artistService.getTopTenArtistByTotalPrice();
+         System.out.println(artisList);
     }
 
     /**
