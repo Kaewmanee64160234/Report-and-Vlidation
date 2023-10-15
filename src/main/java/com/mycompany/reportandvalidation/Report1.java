@@ -15,6 +15,8 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultKeyedValuesDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -31,6 +33,7 @@ public class Report1 extends javax.swing.JFrame {
     private UtilDateModel model2;
     private ChartPanel chartPanel;
     private DefaultPieDataset pieDataset;
+    private DefaultCategoryDataset barDataset;
 
     /**
      * Creates new form Report1
@@ -41,9 +44,12 @@ public class Report1 extends javax.swing.JFrame {
         artisList = artistService.getAllArtistByTotalPrice();
         initTable();
         initDatePicker();
-         initPieChart();
+        initPieChart();
+
         loadPieData();
-      
+        initBarChart();
+        loadBarData();
+
     }
 
     private void initPieChart() {
@@ -61,6 +67,30 @@ public class Report1 extends javax.swing.JFrame {
         pieDataset.clear();
         for (ArtistReport artistReport : artisList) {
             pieDataset.setValue(artistReport.getName(), artistReport.getTotalPrice());
+        }
+    }
+
+    private void initBarChart() {
+        barDataset = new DefaultCategoryDataset();
+        JFreeChart barChart = ChartFactory.createBarChart(
+                "Artist",
+                "Category",
+                "Score",
+                barDataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+        ChartPanel chartPanel1 = new ChartPanel(barChart);
+        pnlChart1.add(chartPanel1);
+
+    }
+
+    private void loadBarData() {
+        barDataset.clear();
+        for (ArtistReport artistReport : artisList) {
+            barDataset.addValue(artistReport.getTotalPrice(), "Income", artistReport.getName());            
+            barDataset.addValue(artistReport.getTotalQuantity(), "Coppy", artistReport.getName());
+
+
         }
     }
 
@@ -138,6 +168,7 @@ public class Report1 extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblArtist = new javax.swing.JTable();
         pnlChart = new javax.swing.JPanel();
+        pnlChart1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -161,7 +192,7 @@ public class Report1 extends javax.swing.JFrame {
                 .addComponent(jplDatepicker1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(255, Short.MAX_VALUE))
+                .addContainerGap(615, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,6 +222,8 @@ public class Report1 extends javax.swing.JFrame {
 
         pnlChart.setBackground(new java.awt.Color(255, 204, 204));
 
+        pnlChart1.setBackground(new java.awt.Color(255, 204, 204));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -199,16 +232,22 @@ public class Report1 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlChart, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
+                    .addComponent(pnlChart1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
-                    .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(pnlChart, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlChart1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -230,7 +269,7 @@ public class Report1 extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -253,6 +292,7 @@ public class Report1 extends javax.swing.JFrame {
         artisList = artistService.getArtistByTotalPrice(startDateString, stopDateString);
         model.fireTableDataChanged();
         loadPieData();
+        loadBarData();
     }// GEN-LAST:event_btnProcessActionPerformed
 
     /**
@@ -302,6 +342,7 @@ public class Report1 extends javax.swing.JFrame {
     private javax.swing.JPanel jplDatepicker;
     private javax.swing.JPanel jplDatepicker1;
     private javax.swing.JPanel pnlChart;
+    private javax.swing.JPanel pnlChart1;
     private javax.swing.JTable tblArtist;
     // End of variables declaration//GEN-END:variables
 }
