@@ -4,6 +4,7 @@
  */
 package com.mycompany.reportandvalidation;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 import javax.swing.table.AbstractTableModel;
@@ -20,6 +21,8 @@ public class Report1 extends javax.swing.JFrame {
     private final ArtistService artistService;
     private final List<ArtistReport> artisList;
     private AbstractTableModel model;
+    private UtilDateModel model1;
+    private UtilDateModel model2;
 
     /**
      * Creates new form Report1
@@ -29,15 +32,22 @@ public class Report1 extends javax.swing.JFrame {
         artistService = new ArtistService();
         artisList = artistService.getTopTenArtistByTotalPrice();
         initTable();
-        UtilDateModel model = new UtilDateModel();
+        model1 = new UtilDateModel();
         Properties p = new Properties();
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+        JDatePanelImpl datePanel = new JDatePanelImpl(model1, p);
         JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         jplDatepicker.add(datePicker);
-        model.setSelected(true);
+        model1.setSelected(true);
+
+        model2 = new UtilDateModel();
+        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p);
+        JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+        jplDatepicker1.add(datePicker2);
+        model2.setSelected(true);
+
     }
 
     private void initTable() {
@@ -90,6 +100,8 @@ public class Report1 extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jplDatepicker = new javax.swing.JPanel();
+        jplDatepicker1 = new javax.swing.JPanel();
+        btnProcess = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblArtist = new javax.swing.JTable();
@@ -98,6 +110,13 @@ public class Report1 extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(204, 255, 204));
 
+        btnProcess.setText("Process");
+        btnProcess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcessActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -105,13 +124,21 @@ public class Report1 extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jplDatepicker, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jplDatepicker1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jplDatepicker, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jplDatepicker1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jplDatepicker, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -171,6 +198,12 @@ public class Report1 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        System.out.println(simpleDateFormat.format(model1.getValue())  + " " + simpleDateFormat.format(model2.getValue()));
+    }//GEN-LAST:event_btnProcessActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -211,10 +244,12 @@ public class Report1 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnProcess;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel jplDatepicker;
+    private javax.swing.JPanel jplDatepicker1;
     private javax.swing.JTable tblArtist;
     // End of variables declaration//GEN-END:variables
 }
