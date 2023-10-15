@@ -64,6 +64,7 @@ public class ArtistDao implements Dao<ArtistReport> {
                     " INNER JOIN tracks tra ON tra.AlbumId=alb.AlbumId " +
                     "INNER JOIN invoice_items ini ON ini.TrackId=tra.TrackId " +
                     " INNER JOIN invoices inv ON inv.InvoiceId=ini.InvoiceId " +
+                 ""+
                     "GROUP BY art.ArtistId " +
                     "ORDER BY TotalPrice DESC LIMIT ?";
         try {

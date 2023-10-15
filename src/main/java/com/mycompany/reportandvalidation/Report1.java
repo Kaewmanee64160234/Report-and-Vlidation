@@ -5,13 +5,18 @@
 package com.mycompany.reportandvalidation;
 
 import java.util.List;
+import java.util.Properties;
 import javax.swing.table.AbstractTableModel;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 /**
  *
  * @author USER
  */
 public class Report1 extends javax.swing.JFrame {
+
     private final ArtistService artistService;
     private final List<ArtistReport> artisList;
     private AbstractTableModel model;
@@ -23,14 +28,27 @@ public class Report1 extends javax.swing.JFrame {
         initComponents();
         artistService = new ArtistService();
         artisList = artistService.getTopTenArtistByTotalPrice();
+        initTable();
+        UtilDateModel model = new UtilDateModel();
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        jplDatepicker.add(datePicker);
+        model.setSelected(true);
+    }
+
+    private void initTable() {
         model = new AbstractTableModel() {
-            String[] columns = { "ID", "Name", "Quantity", "Price" };
+            String[] columns = {"ID", "Name", "Quantity", "Price"};
 
             @Override
             public String getColumnName(int column) {
                 return columns[column];
             }
-            
+
             @Override
             public int getRowCount() {
                 return artisList.size();
@@ -71,6 +89,7 @@ public class Report1 extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jplDatepicker = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblArtist = new javax.swing.JTable();
@@ -83,11 +102,17 @@ public class Report1 extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jplDatepicker, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 58, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jplDatepicker, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 204));
@@ -189,6 +214,7 @@ public class Report1 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jplDatepicker;
     private javax.swing.JTable tblArtist;
     // End of variables declaration//GEN-END:variables
 }
